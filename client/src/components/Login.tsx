@@ -3,21 +3,29 @@ import React, { useState } from "react";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const LoginUser = async (e: any) => {
-    e.preventDefault(); // Prevent the default form behavior
+  const [isLoading, setIsLoading] = useState(false);
 
-    const response = await fetch("http://localhost:5000/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-    console.log(data); // Log the response data
+  const LoginUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) throw new Error("Login failed");
+      const data = await response.json();
+      console.log("Login successful:", data);
+      alert("Login successful!");
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <div
       style={{
@@ -74,6 +82,7 @@ const Login: React.FC = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             style={{
@@ -94,6 +103,7 @@ const Login: React.FC = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <button
             style={{
@@ -110,7 +120,7 @@ const Login: React.FC = () => {
             }}
             type="submit"
           >
-            Login
+            {isLoading ? "Loading..." : "Login"}
           </button>
         </form>
         <p>
@@ -122,4 +132,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-
