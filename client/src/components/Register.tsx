@@ -4,21 +4,27 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const registerUser = async (e:any) => {
-    e.preventDefault(); // Prevent the default form behavior
+  const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form behavior
 
-    const response = await fetch("http://localhost:5000/api/register", { // Correct port
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    const data = await response.json();
-    console.log(data); // Log the response data
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Success:", data); // Log the response data
+      alert("User registered successfully!");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      alert("Failed to register. Please try again.");
+    }
   };
 
   return (
@@ -29,7 +35,7 @@ const Register: React.FC = () => {
         alignItems: "center",
         flexDirection: "column",
         height: "100vh",
-        textAlign:"center"
+        textAlign: "center",
       }}
     >
       <div
@@ -76,6 +82,7 @@ const Register: React.FC = () => {
             placeholder="Username"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           />
           <input
             style={{
@@ -96,6 +103,7 @@ const Register: React.FC = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             style={{
@@ -116,6 +124,7 @@ const Register: React.FC = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <button
             style={{
