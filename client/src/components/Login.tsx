@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const LoginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -14,13 +16,17 @@ const Login: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      if (!response.ok) throw new Error("Login failed");
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
       const data = await response.json();
       console.log("Login successful:", data);
-      alert("Login successful!");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed. Try again.");
+      alert("Login failed. Please check your credentials and try again.");
     } finally {
       setIsLoading(false);
     }

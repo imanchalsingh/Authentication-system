@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Register: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form behavior
@@ -20,7 +23,12 @@ const Register: React.FC = () => {
 
       const data = await response.json();
       console.log("Success:", data); // Log the response data
-      alert("User registered successfully!");
+
+      if (data.status === "ok") {
+        navigate("/dashboard"); // Navigate to Dashboard on successful registration
+      } else {
+        alert("Failed to register. Please try again.");
+      }
     } catch (error) {
       console.error("Registration failed:", error);
       alert("Failed to register. Please try again.");
