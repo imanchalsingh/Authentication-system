@@ -34,7 +34,9 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-const PORT = 5000; // Or process.env.PORT if using environment variables
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+
